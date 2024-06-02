@@ -30,6 +30,7 @@ while ishandle(h)
         % 중심 좌표 출력
         disp(['Box ', num2str(i), ': Center (X, Y) = (', num2str(centerX), ', ', num2str(centerY), ')']);
     end
+
 end
 
 clear camera;

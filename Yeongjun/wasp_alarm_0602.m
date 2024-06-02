@@ -7,7 +7,7 @@ close all
 load('detector.mat');
 
 %% arduino objects
-a = arduino('COM6', 'Uno', 'Libraries', 'Servo')
+a = arduino('COM6', 'Uno', 'Libraries', 'Servo');
 servo_motor1 = servo(a, 'D5');
 servo_motor2 = servo(a, 'D6');
 %servo_motor1 = servo(a, 'D3', 'MinPulseDuration', 5.44e-4, 'MaxPulseDuration', 2.40e-3);
@@ -16,8 +16,12 @@ servo_motor2 = servo(a, 'D6');
 % 모터 초기 상태: 각도 0
 reset_motor(servo_motor1, servo_motor2);
 % 각도 리셋 상태: 0
+global angle_x;
+global angle_y;
+
 angle_x = 0.;
-angle_y = 0.;
+angle_x = 0.;
+
 %부저, 레이저 핀
 buzzerPin = 'D3';
 laserPin = 'D7';
@@ -42,38 +46,20 @@ camera = webcam;
 h = figure;
 
 while ishandle(h)
-    %%%%%% 함수 필요 구간
-    I = snapshot(camera);
-    image(I)
-    
-    [bboxes,scores,labels] = detect(detector, I);
-    showShape("rectangle", bboxes, 'Label', labels)
-    drawnow
+    %% 카메라에서 객체 인식
+    detected_object = get_detected_object(camera);
 
+    bboxes = detected_object.bboxes;
+    labels = detected_object.labels;
+
+    %% 인식된 객체가 없다면 continue
     if isempty(bboxes)
         continue;
     end
-    my_table = [0, 0, 0, 0];
-    for k=1:size(labels)
-        if labels(k) == 'wasp'
-            my_table = [my_table; bboxes(k,:)];
-        end
-    end
-    if size(my_table) > 1
-        bboxes = my_table;
-    end
-
-    if ~isempty(bboxes)
-        for i = 2:size(bboxes, 1)
-            centerX = bboxes(i, 1) + bboxes(i, 3) / 2;
-            centerY = bboxes(i, 2) + bboxes(i, 4) / 2;
-            
-            % 중심 좌표 출력
-            disp(['Box ', num2str(i), ': Center (X, Y) = (', num2str(centerX), ', ', num2str(centerY), ')']);
-        end
-    end
-    %%%%%% 
     
+    %% 말벌의 중심 좌표 획득
+    centerXY = get_wasp_center(labels, bboxes);
+
     %% 말벌이 한 마리 이상 있을 때
     if size(centerXY,1) > 1
         %경보 1.5초 울림

@@ -1,4 +1,4 @@
-function rotate_motor(servomotor1, servomotor2, xdegree, ydegree)
+function rotate_motor(servo_motor1, servo_motor2, xdegree, ydegree)
 % 레이저가 따라감 x축
     for angle_x = 0:1/180:xdegree                %xdegree: 최대 1 (180도)
         writePosition(servo_motor1, angle_x);
@@ -15,4 +15,4 @@ function rotate_motor(servomotor1, servomotor2, xdegree, ydegree)
         fprintf('Current motor y position is %d degrees\n', current_pos_y);
         pause(ypointing_speed_delay);
     end
-end때
+end

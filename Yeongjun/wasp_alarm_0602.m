@@ -61,7 +61,7 @@ while ishandle(h)
     centerXY = get_wasp_center(labels, bboxes);
 
     %% 말벌이 한 마리 이상 있을 때
-    if size(centerXY,1) > 1
+    if ~isempty(centerXY)
         %경보 1.5초 울림
         playTone(a, buzzerPin, 2400, buzzerdelay);
         % 말벌이 두 마리 이상 있으면 첫번째 인식한 말벌만 취한다.

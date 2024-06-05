@@ -23,10 +23,11 @@ while ishandle(h)
     %% 말벌의 중심 좌표 획득
     centerXY = get_wasp_center(labels, bboxes);
 
-    if ~isempty(centerXY)
-        disp('Detected wasp center coordinates:');
-        disp(centerXY);
-    end
+    % if ~isempty(centerXY)
+    %     disp('Detected wasp center coordinates:');
+    %     disp(centerXY);
+    % end
+    fprintf('1\n');
 end
 
 clear camera;

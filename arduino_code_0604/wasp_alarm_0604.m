@@ -69,9 +69,9 @@ while ishandle(h)
         % 말벌이 두 마리 이상 있으면 첫번째 인식한 말벌만 취한다.
         idx = 1;
         wasp_pos = centerXY(idx,:);
-        [xdegree, ydegree] = match_position_to_angle(wasp_pos(1), wasp_pos(2), middlepointx, middlepointy, height);
+        [xdegree, ydegree] = match_position_to_angle(wasp_pos(1), wasp_pos(2), middlepointx, middlepointy, height, half_degree);
         % If 레이저가 말벌을 따라갔을 때
-        if abs(angle_x - xdegree) < 0.02 && abs(angle_y - ydegree) < 0.02
+        if (abs(angle_x - xdegree) < 0.02) & (abs(angle_y - ydegree) < 0.02)
             %레이저를 쏨
             a.writeDigitalPin(laserPin, 1);
             pause(lasertime);
@@ -81,7 +81,7 @@ while ishandle(h)
             a.writeDigitalPin(laserPin, 0);
             pause(laserstoptime);
             %서보모터 작동
-            rotate_motor(servomotor1, servomotor2, xdegree, ydegree);
+            rotate_motor(servo_motor1, servo_motor2, xdegree, ydegree);
             %레이저를 쏨
             a.writeDigitalPin(laserPin, 1);
             pause(lasertime);

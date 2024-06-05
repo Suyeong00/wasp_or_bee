@@ -34,9 +34,13 @@ buzzerdelay = 1.5;
 % 픽셀을 cm로 치환
 %inputsize: 가로 1920 pixel, 세로 1080 pixel, 거리: 30cm, 벌통 가로 길이: 24cm, 벌통 높이: 15cm
 %벌통 높이 기준으로 비율: 1080/15 (pixel/cm)
+
+real_distance = 30;
+%distance_tuning; = 0;
+
 box_height = 15;
 half_degree = pi/2;
-distance = 30 * 1080/box_height;
+distance = real_distance * 1080/box_height;
 middlepointx = 960;
 middlepointy = 540;
 
@@ -54,6 +58,11 @@ while ishandle(h)
     time = time + 1;
     %% 인식된 객체가 없다면 continue
     if isempty(bboxes)
+        % return_motor_home(servo_motor1, servo_motor2);
+        % a.writeDigitalPin(laserPin, 1);
+        % %pause(laserstoptime);
+        % %모터 제자리로 이동
+        % fprintf('default shoot\n');
         continue;
     end
         
@@ -64,21 +73,24 @@ while ishandle(h)
     %     fprintf('%d\n', time);
     %     continue;
     % end;
-     fprintf('0\n');
+    fprintf('0\n');
     %% 말벌이 한 마리 이상 있을 때
     if ~isempty(centerXY)
         %경보 1.5초 울림
+        fprintf('5\n');
         playTone(a, buzzerPin, 2400, buzzerdelay);
         % 말벌이 두 마리 이상 있으면 첫번째 인식한 말벌만 취한다.
         idx = 1;
         wasp_pos = centerXY(idx,:);
         [xdegree, ydegree] = match_position_to_angle(wasp_pos(1), wasp_pos(2), middlepointx, middlepointy, distance, half_degree);
         % If 레이저가 말벌을 따라갔을 때
-        if (abs(angle_x - xdegree) < 0.02) & (abs(angle_y - ydegree) < 0.02)
+        if (abs(angle_x - xdegree) < (2/180)) & (abs(angle_y - ydegree) < (2/180))
             %레이저를 쏨
+            fprintf('angle x = %d, xdegrer = %d\n', angle_x, xdegree);
+            fprintf('angle y = %d, ydegrer = %d\n', angle_y, ydegree);
             a.writeDigitalPin(laserPin, 1);
             %pause(lasertime);
-            fprintf('1\n');
+            fprintf('shoot\n');
         % 말벌을 따라가고 있을 때
         else 
             %레이저 안 쏨
@@ -99,6 +111,7 @@ while ishandle(h)
         %pause(laserstoptime);
         %모터 제자리로 이동
         return_motor_home(servo_motor1, servo_motor2);
+        fprintf('4\n');
     end
     time = 0;
 end
